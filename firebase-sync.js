@@ -131,6 +131,8 @@
       // Give them an immediately readable final screen instead of an empty
       // full-screen black backdrop. Do not interrupt a cinematic in progress.
       if (snapshot.overlays?.['final3310-overlay']?.shown &&
+          snapshot.flags?.final3310Complete &&
+          snapshot.finalPhase === 'summary' &&
           !window.CICARS_VISUALS?.finalPlaying()) {
         window.CICARS_VISUALS?.showFinalSummary();
       }
