@@ -9,7 +9,7 @@ body{margin:0;background:radial-gradient(ellipse at center,#07170b 0%,#020803 70
 .crt::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.56) 100%)}
 .terminal{position:relative;min-height:100dvh;padding:clamp(6px,.9vw,14px) clamp(16px,4.3vw,86px) clamp(14px,2vw,28px);overflow:hidden;box-shadow:inset 0 0 120px rgba(0,0,0,.56);background:radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,.18) 88%,rgba(0,0,0,.45) 100%);animation:screen-breathe 8.5s ease-in-out infinite}
 .screen-mask{position:absolute;inset:4px 8px 8px;border-radius:72px/42px;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(90,190,110,.14),inset 0 0 120px rgba(0,0,0,.40),inset 0 18px 36px rgba(255,255,255,.02),inset 0 -20px 36px rgba(0,0,0,.28);z-index:8}
-.screen-inner{position:relative;min-height:calc(100dvh - 18px);clip-path:inset(0 0 0 0 round 8.5%/11%);filter:none;transform:scale(.987);transform-origin:center center}
+.screen-inner{position:relative;min-height:calc(100dvh - 18px);clip-path:inset(0 0 0 0 round 8.5%/11%);filter:url(#crt-barrel);transform:scale(.987);transform-origin:center center}
 .screen-inner::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:7;background:radial-gradient(ellipse at center,transparent 56%,rgba(0,0,0,.08) 78%,rgba(0,0,0,.22) 100%),linear-gradient(to right,rgba(0,0,0,.18) 0,transparent 16px,transparent calc(100% - 18px),rgba(0,0,0,.36) calc(100% - 6px),rgba(0,0,0,.72) 100%)}
 .head,.console,.command-form,.exit-screen,.footnote,.message,.history-line,.file-manager{position:relative;z-index:4}
 .head{display:flex;align-items:center;border-top:2px solid var(--phosphor);border-bottom:2px solid var(--phosphor);min-height:clamp(82px,7.1vw,122px);margin:0 0 14px;transform:perspective(1200px) rotateX(-1deg) scaleX(.986);transform-origin:center center}
@@ -44,7 +44,7 @@ body{margin:0;background:radial-gradient(ellipse at center,#07170b 0%,#020803 70
 .exit-screen button:hover,.fm-close:hover,.flip-doc:hover{text-decoration:underline}
 [hidden]{display:none!important}
 .file-manager{position:fixed;inset:0;z-index:50;background:rgba(2,8,3,.84);padding:clamp(14px,2vw,28px);overflow:auto}
-.fm-window{border:2px solid var(--phosphor);background:rgba(2,8,3,.95);box-shadow:inset 0 0 24px rgba(36,107,43,.22);min-height:calc(100dvh - clamp(28px,4vw,56px));padding:16px;transform:perspective(1300px) rotateX(.55deg) scaleX(.99);filter:none}
+.fm-window{border:2px solid var(--phosphor);background:rgba(2,8,3,.95);box-shadow:inset 0 0 24px rgba(36,107,43,.22);min-height:calc(100dvh - clamp(28px,4vw,56px));padding:16px;transform:perspective(1300px) rotateX(.55deg) scaleX(.99);filter:url(#crt-barrel)}
 .fm-topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:2px solid var(--phosphor);padding-bottom:12px;margin-bottom:14px}
 .fm-title{letter-spacing:.08em}
 .fm-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
@@ -374,7 +374,7 @@ body{margin:0;background:radial-gradient(ellipse at center,#07170b 0%,#020803 70
 
 /* stronger barrel distortion for audio CRT window */
 .audio-terminal{
-  filter:none !important;
+  filter:url(#crt-barrel) !important;
   transform:scale(.987) !important;
   transform-origin:center center !important;
   clip-path: inset(0 0 0 0 round 8.5% / 11%) !important;
@@ -491,7 +491,7 @@ body > .file-manager .fm-close,body > .file-manager .fm-tab,body > .file-manager
   border:2px solid rgba(105,173,121,.95)!important;
   background:rgba(2,8,3,.95)!important;
   backdrop-filter:none!important;
-  filter:none!important;
+  filter:url(#crt-barrel)!important;
   transform:scale(.987)!important;
   transform-origin:center center!important;
   clip-path:inset(0 0 0 0 round 8.5%/11%)!important;
@@ -566,7 +566,7 @@ body > .file-manager .fm-window > *{
   border:2px solid rgba(105,173,121,.96)!important;
   border-radius:0!important;
   background:rgba(2,8,3,.95)!important;
-  filter:none!important;
+  filter:url(#crt-barrel)!important;
   transform:scale(.987)!important;
   transform-origin:center center!important;
   clip-path:inset(0 0 0 0 round 8.5%/11%)!important;
@@ -633,7 +633,7 @@ body > .file-manager .fm-window::after{
   border:2px solid rgba(105,173,121,.96)!important;
   border-radius:0!important;
   background:rgba(2,8,3,.96)!important;
-  filter:none!important;
+  filter:url(#crt-barrel)!important;
   transform:scale(.987)!important;
   transform-origin:center center!important;
   clip-path:inset(0 0 0 0 round 8.5%/11%)!important;
@@ -674,7 +674,7 @@ body > .file-manager .fm-window{
   padding:18px!important;
   border:2px solid rgba(105,173,121,.96)!important;
   background:rgba(2,8,3,.95)!important;
-  filter:none!important;
+  filter:url(#crt-barrel)!important;
   transform:scale(.987)!important;
   transform-origin:center center!important;
   clip-path:inset(0 0 0 0 round 8.5%/11%)!important;
@@ -914,7 +914,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
   border:2px solid #60936c;
   background:radial-gradient(ellipse at center,#081b0e,#010603 90%);
   padding:clamp(23px,2.6vw,44px);
-  filter:none;
+  filter:url(#crt-barrel);
   transform:scale(.993);
   transform-origin:center center;
   box-shadow:inset 0 0 55px #000a;
@@ -1178,7 +1178,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
   border-radius:0;
   background:radial-gradient(ellipse at center,#0c2815 0%,#031208 59%,#000 100%);
   box-shadow:inset 0 0 100px #000b,0 0 50px #0009;
-  filter:none;
+  filter:url(#crt-barrel);
   transform:scale(.985);
   transform-origin:center center;
   clip-path:inset(0 0 0 0 round 8.5%/11%);
@@ -1214,7 +1214,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
 /* ================= TEST 03 / Investigation modals ================= */
 .investigation-modal{position:fixed;inset:0;z-index:82;display:grid;place-items:center;padding:clamp(16px,2.4vw,34px);background:rgba(0,0,0,.84)}
 .investigation-shell{position:relative;width:min(1120px,94vw)}
-.investigation-warp{position:relative;filter:none;border:1px solid rgba(107,255,151,.45);border-radius:36px/72px;background:radial-gradient(circle at center,rgba(9,28,14,.96),rgba(2,9,4,.985));padding:clamp(18px,2vw,26px);box-shadow:0 0 0 1px rgba(54,173,85,.18) inset,0 0 34px rgba(32,255,95,.12),inset 0 0 140px rgba(0,0,0,.7);overflow:hidden}
+.investigation-warp{position:relative;filter:url(#crt-barrel);border:1px solid rgba(107,255,151,.45);border-radius:36px/72px;background:radial-gradient(circle at center,rgba(9,28,14,.96),rgba(2,9,4,.985));padding:clamp(18px,2vw,26px);box-shadow:0 0 0 1px rgba(54,173,85,.18) inset,0 0 34px rgba(32,255,95,.12),inset 0 0 140px rgba(0,0,0,.7);overflow:hidden}
 .investigation-warp::before,.investigation-warp::after{content:"";position:absolute;inset:0;pointer-events:none}
 .investigation-warp::before{background:repeating-linear-gradient(to bottom,rgba(204,255,214,.02) 0 1px,rgba(0,0,0,.20) 2px 3px);opacity:.75;mix-blend-mode:screen}
 .investigation-warp::after{background:radial-gradient(ellipse at center,rgba(0,0,0,0) 44%,rgba(0,0,0,.46) 100%)}
@@ -1269,7 +1269,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
   box-shadow: 0 0 44px #000b;
 }
 .investigation-warp {
-  filter:none;
+  filter: url(#crt-barrel-soft);
   clip-path: inset(0 round 5% / 8%);
   max-height: calc(100dvh - 34px);
   overflow: auto;
@@ -1460,7 +1460,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
 /* Barrel warping distorts the letters, progress bar and grid itself. */
 .hack-success-overlay {background:radial-gradient(ellipse at center,#041414 0%,#000705 64%,#000 100%)!important}
 .hack-success-monitor {
-  filter:none !important;
+  filter:url(#crt-barrel) !important;
   transform:scale(.985);
   transform-origin:center center;
   width:min(1440px,97vw)!important;
@@ -1479,7 +1479,7 @@ html body #assessment-doc-modal[hidden]{display:none!important;visibility:hidden
 .hack-success-monitor::after{inset:2.7%!important;border-color:#56bdab44!important;border-radius:42px/70px!important}
 .hack-success-overlay::before{opacity:.7}
 @media(max-width:650px){
- .hack-success-monitor{width:100%!important;height:min(680px,94dvh)!important;min-height:400px;filter:none!important}
+ .hack-success-monitor{width:100%!important;height:min(680px,94dvh)!important;min-height:400px;filter:url(#crt-barrel-soft)!important}
 }
 
 /* ===== GAME MASTER PANEL (LOCAL 1234 PIN) ===== */
@@ -1551,7 +1551,7 @@ body:has(.assessment-doc-modal:not([hidden])) .admin-launch{visibility:hidden}
 @keyframes decree3310-appear{from{opacity:0;transform:translateY(26px) scale(.94);filter:brightness(.2)}55%{filter:brightness(1.3)}to{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
 .decree3310-glass{position:relative;width:100%;height:100%;padding:clamp(28px,4vw,54px) clamp(26px,4vw,66px);overflow:hidden;border:1px solid #4a9a60;border-radius:8%/12%;background:radial-gradient(ellipse at 48% 42%,#0a2410 0%,#031209 63%,#000603 100%);box-shadow:0 0 36px rgba(25,108,51,.3),inset 0 0 100px #000d;isolation:isolate}
 /* Shared actual optical barrel mapping from existing SVG filter. */
-.crt3310-lens{filter:none!important;transform:scale(.97);transform-origin:center center;}
+.crt3310-lens{filter:url(#crt-barrel)!important;transform:scale(.97);transform-origin:center center;}
 .decree3310-glass::after,.final3310-center::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:40;background:radial-gradient(ellipse at 50% 49%,transparent 40%,rgba(0,0,0,.10) 63%,rgba(0,0,0,.74) 100%);box-shadow:inset 0 0 23px #062a16aa,inset 0 0 95px #0008}
 .decree3310-scan,.final3310-grain{position:absolute;inset:0;pointer-events:none;z-index:39;opacity:.6;background:repeating-linear-gradient(0deg,rgba(0,0,0,.0) 0 2px,rgba(0,0,0,.29) 3px 4px),repeating-linear-gradient(90deg,rgba(28,80,44,.022) 0px,transparent 4px);}
 .decree3310-close{position:absolute;right:clamp(31px,5vw,68px);top:clamp(16px,3vw,34px);z-index:50;min-height:44px;padding:10px 17px;cursor:pointer;border:1px solid #74c78e;background:#061b0d;color:#d6ffe1;font:700 14px Consolas,monospace;box-shadow:0 0 12px #15592a66;transition:background .15s,border-color .15s}
@@ -1630,7 +1630,7 @@ body:has(.assessment-doc-modal:not([hidden])) .admin-launch{visibility:hidden}
  radial-gradient(ellipse at center,transparent 35%,#000b 95%);animation:sync-scan 2.8s linear infinite}
 .sync-system-frame{width:min(86vw,1050px);min-height:300px;display:flex;flex-direction:column;
  justify-content:space-between;gap:30px;border:1px solid #4a8b5b;padding:clamp(23px,4vw,50px);
- background:radial-gradient(ellipse at center,#081c0c,#000b03);filter:none;
+ background:radial-gradient(ellipse at center,#081c0c,#000b03);filter:url(#crt-barrel);
  border-radius:30px/75px;box-shadow:inset 0 0 100px #000b,0 0 40px #103b1a66;
  text-align:center;overflow:hidden}
 .sync-system-header,.sync-system-footer{color:#558963;letter-spacing:.18em;font-size:clamp(11px,1.1vw,15px)}
@@ -1644,89 +1644,19 @@ body:has(.assessment-doc-modal:not([hidden])) .admin-launch{visibility:hidden}
 @keyframes sync-scan{from{transform:translateY(-2px)}to{transform:translateY(2px)}}
 @media(max-width:700px){.shared-audio-controls{top:4px;left:4px;gap:4px}.shared-audio-controls button{font-size:9px;padding:5px}.session-indicator{bottom:56px;left:6px;font-size:9px}}
 
-
-/* GITHUB PAGES / CHROME FIX: feImage data-URI inside SVG filters can produce
-   a fully black compositor surface when loaded over HTTPS. No SVG filter is
-   applied to gameplay screens. CRT shape survives via curved borders, inward
-   vignettes and a mild optical perspective transformation. */
-.crt3310-lens,.hack-success-monitor,.identification-center,.sync-system-frame,
-.screen-inner,.fm-window {filter:none!important;}
-.final3310-center {transform:perspective(1600px) rotateX(1deg) scale(.985)!important;
- border-radius:8% / 14%!important; box-shadow:inset 0 0 110px #000c,0 0 32px #1c653544!important;}
-.hack-success-monitor {border-radius:9% / 15%!important;
- transform:perspective(1550px) rotateX(.8deg) scale(.985)!important;}
-.sync-system-frame {transform:perspective(1600px) rotateX(.7deg) scale(.99);}
-/* Admin must sit above the opaque, full-screen finale. */
-.admin-modal {z-index:31000!important;}
-.final3310-admin-launch {position:fixed;top:18px;right:24px;z-index:22000;
- padding:12px 18px;min-height:42px;font:700 13px Consolas,monospace;
- letter-spacing:.09em;color:#b9ffd1;background:#04150aef;
- border:1px solid #6bc68b;box-shadow:0 0 22px #174c2390;cursor:pointer;}
-.final3310-admin-launch:hover,.final3310-admin-launch:focus-visible {
- color:#fff;background:#16532b;outline:2px solid #8bffc08c;}
-@media(max-width:650px){.final3310-admin-launch{top:10px;right:10px;padding:9px;font-size:11px}}
-/* Browsers have different [hidden] handling when other selectors set display. */
-.final3310-console[hidden],.final3310-end[hidden],.final3310-banner[hidden] {display:none!important;}
-
-/* CICARS 3310 — CRT visual restoration (Chrome/GitHub Pages safe).
-   Do not reintroduce the original feImage data URI SVG filter: on some
-   Chromium builds that creates a completely black compositing surface. */
-:root { --crt-green-glow: rgba(85, 241, 132, .16); }
-.screen-inner {
-  border-radius: 9% / 5% !important;
-  clip-path: inset(0 round 9% / 5%) !important;
-  transform: perspective(1000px) rotateX(.6deg) scaleX(.962) scaleY(.985) !important;
-  transform-origin: center center !important;
-  box-shadow: inset 0 0 62px 21px rgba(0,0,0,.67),
-              inset 0 0 4px 1px rgba(127,255,151,.26) !important;
-  isolation:isolate;
+/* HOTFIX: original barrel CRT remains untouched on the main terminal.
+   Chromium sometimes rasterizes the fullscreen SVG-filtered cinematics as black.
+   The fallback affects only those fullscreen panels, not the original site. */
+#identification-overlay .identification-center,
+#hack-success-overlay .hack-success-monitor,
+#final3310-overlay .final3310-center {
+  filter: none !important;
+  -webkit-filter: none !important;
 }
-.screen-inner::before {
-  border-radius: 9% / 5% !important;
-  background: radial-gradient(ellipse 84% 76% at center,
-    transparent 47%,rgba(0,0,0,.12) 70%,rgba(0,0,0,.79) 100%),
-    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.25) 3px 4px) !important;
-  opacity:.85 !important;
+#identification-overlay .identification-center {
+  transform: perspective(1600px) rotateX(.4deg) scale(.985);
 }
-.screen-mask {
-  inset: 9px 2.8% 13px !important;
-  border-radius: 10% / 6% !important;
-  box-shadow: inset 0 0 0 1px rgba(113,255,151,.22),
-              inset 0 0 75px 18px rgba(0,0,0,.62),
-              0 0 30px rgba(35,120,55,.14) !important;
-}
-.workspace-tabs,.workspace-screen,.photo-screen,
-body > .file-manager .fm-window {
-  border-radius: 8% / 5% !important;
-  clip-path: inset(0 round 8% / 5%) !important;
-  transform: perspective(1100px) rotateX(.65deg) scaleX(.975) scaleY(.992) !important;
-  box-shadow:inset 0 0 78px rgba(0,0,0,.7),
-    inset 0 0 1px 1px rgba(116,254,152,.19),0 0 25px rgba(44,172,83,.12) !important;
-}
-/* Preserve key browser-safe rendering for all cinematic overlays. */
-.crt3310-lens,.hack-success-monitor,.identification-center,.sync-system-frame {
-  filter:none!important;
-  border-radius: 9% / 7% !important;
-  transform: perspective(1100px) rotateX(.55deg) scaleX(.96) scaleY(.98) !important;
-  box-shadow: inset 0 0 98px 16px #000b,0 0 34px #155a3277 !important;
-}
-.final3310-center {
-  border-radius: 9% / 7% !important;
-  transform: perspective(1100px) rotateX(.55deg) scaleX(.96) scaleY(.98) !important;
-  box-shadow: inset 0 0 115px #000c,0 0 38px #1c653577 !important;
-}
-.hack-success-monitor::before,.crt-final::before {
-  opacity:.6!important;
-  background:repeating-linear-gradient(0deg,transparent 0 2px,#0006 3px 4px),
-    radial-gradient(ellipse at center,transparent 42%,#000a 100%)!important;
-}
-@media(max-width:720px){
-  .screen-inner {transform:scale(.99)!important;clip-path:inset(0 round 5% / 3%)!important}
-  .screen-mask{inset:2px 5px!important}
-  .workspace-tabs,.workspace-screen,.photo-screen,body > .file-manager .fm-window {
-    transform:none!important;clip-path:inset(0 round 5% / 3%)!important;
-  }
-  .crt3310-lens,.hack-success-monitor,.identification-center,.sync-system-frame,.final3310-center {
-    transform:scale(.99)!important;border-radius:5%/3%!important;
-  }
+#hack-success-overlay .hack-success-monitor,
+#final3310-overlay .final3310-center {
+  transform: perspective(1800px) rotateX(.35deg) scale(.985);
 }
