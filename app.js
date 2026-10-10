@@ -482,17 +482,15 @@ function askIdentityQuestion() {
   if (identityVerified || identityQuestionActive) return;
   identityQuestionActive = true;
   line('------------------------------------------------------------', 'assessment-separator');
-  line('ТАК ЧТО, КТО Я ТАКОЙ И КАКАЯ МОЯ ОСНОВНАЯ ЦЕЛЬ?', 'assessment-question');
+  line('В КАКОМ АРХИВЕ Я НАХОЖУСЬ?', 'assessment-question');
   line('------------------------------------------------------------', 'assessment-separator');
   scrollBottom();
 }
 function matchesIdentityAnswer(raw) {
-  const text = normalizeIdentity(raw);
-  const isAI = /(^| )(ии|искусственн\w* интеллект|ai)( |$)/.test(text);
-  const hasContinuity = /непрерывност|бесперебойн|непрерывн|постоянн/.test(text);
-  const hasGovernance = /государственн/.test(text) && /управлен/.test(text);
-  const hasPurpose = /цел|задач|обеспеч|поддержива/.test(text);
-  return isAI && hasContinuity && hasGovernance && hasPurpose;
+  // normalizeIdentity removes punctuation, collapses spaces and upper/lower case.
+  // Accepted: ARCHIVE B 12, ARCHIVE B12, B12.
+  const answer = normalizeIdentity(raw);
+  return answer === 'archive b 12' || answer === 'archive b12' || answer === 'b12';
 }
 let feedbackTimer;
 function unlockSignalAudio() {
@@ -1548,10 +1546,6 @@ function adminJump(stage) {
   }
   closeAdminPanel();
   adminResetStage();
-  // Shared reset must also wipe all pending typed drafts.
-  window.CICARS_SYNC?.clearDraft('command');
-  window.CICARS_SYNC?.clearDraft('access');
-  window.CICARS_SYNC?.refresh();
   if (stage==='start') {input.focus({preventScroll:true});window.scrollTo(0,0);return;}
   adminGrantTrust();
   if (stage==='trust') {input.focus({preventScroll:true});scrollBottom();return;}
@@ -1587,12 +1581,19 @@ function adminJump(stage) {
 }
 adminStages.addEventListener('click', e => {
   const btn=e.target.closest('[data-admin-stage]');
-  if (!btn) return;
-  if (btn.dataset.adminStage === 'start' &&
-      !window.confirm('СБРОС ОБЩЕЙ СЕССИИ CICARS 3310\n\nВесь прогресс и история консоли будут сброшены у всех участников. Продолжить?')) return;
-  adminJump(btn.dataset.adminStage);
+  if(btn) adminJump(btn.dataset.adminStage);
 });
 
+// Keep standard ADMIN panel; omit optional ADMIN RESET buttons from the final screen.
+function removeFinalAdminResetButtons() {
+  const final = document.getElementById('final3310-overlay');
+  if (!final) return;
+  final.querySelectorAll('button').forEach(btn => {
+    if (/^ADMIN\s*[\/|:-]?\s*RESET$/i.test(btn.textContent.trim()) ||
+        btn.matches('.admin-reset, #admin-reset, #final-admin-reset')) btn.remove();
+  });
+}
+removeFinalAdminResetButtons();
 // Start only after every assessment and workspace variable has initialized.
 ["connect gov.net", "inbox sync", "open msg CICARS_3310"].forEach(c => execute(c, { initial: true }));
 activateTab("murphy");
@@ -1608,11 +1609,10 @@ const final3310Console = document.getElementById('final3310-console');
 const final3310End = document.getElementById('final3310-end');
 let final3310Prompted=false, final3310Running=false, final3310AwaitWord=false, final3310Complete=false;
 let final3310DecreeUnlocked=false;
-let final3310VisualRunning=false;
 let final3310Timers=[], final3310Interval=null;
 function final3310Later(fn,ms){final3310Timers.push(setTimeout(fn,ms));}
 function resetFinal3310(){
- final3310VisualRunning=false;
+ cicarsFinalAnimationPlaying = false;
  final3310Timers.forEach(clearTimeout);final3310Timers=[];
  if(final3310Interval!==null)clearInterval(final3310Interval);final3310Interval=null;
  final3310Prompted=false;final3310Running=false;final3310AwaitWord=false;final3310Complete=false;
@@ -1753,10 +1753,11 @@ final3310MusicToggle.addEventListener('click',()=>{
  if(final3310MusicMaster&&final3310AudioCtx)
   final3310MusicMaster.gain.setTargetAtTime(final3310MusicOn?.028:0,final3310AudioCtx.currentTime,.25);
 });
-async function startFinal3310Cinematic(fromNetwork=false){
- if (final3310VisualRunning) return;
- final3310VisualRunning=true;
- if (!fromNetwork) window.CICARS_SYNC?.broadcastVisual('final');
+let cicarsFinalAnimationPlaying = false;
+async function startFinal3310Cinematic(){
+ if (cicarsFinalAnimationPlaying) return;
+ cicarsFinalAnimationPlaying = true;
+ window.CICARS_SYNC?.broadcastVisual('final');
  final3310AwaitWord=false;final3310Complete=true;final3310Modal.hidden=true;
  final3310MusicOn=true;startFinal3310Music();
  final3310MusicToggle.setAttribute('aria-pressed','true');final3310MusicToggle.textContent='◖♫ MUSIC ON';
@@ -1771,59 +1772,73 @@ async function startFinal3310Cinematic(fromNetwork=false){
  const banner=document.getElementById('final3310-banner');banner.hidden=false;playFinal3310Tone();
  await new Promise(r=>final3310Later(r,3700));banner.hidden=true;final3310Console.hidden=true;final3310End.hidden=false;
  final3310End.classList.remove('is-revealed');requestAnimationFrame(()=>final3310End.classList.add('is-revealed'));
- final3310VisualRunning=false;
+ cicarsFinalAnimationPlaying = false;
 }
 
 
-// CICARS VISUAL CONTINUITY // Firebase clients never replace overlay markup.
-// Reconnect or reload: render an immediately usable final state.
-function showFinal3310Summary(){
- if (final3310VisualRunning) return;
- final3310Overlay.hidden=false;
- final3310Console.hidden=true;
- document.getElementById('final3310-banner').hidden=true;
- final3310End.hidden=false;
- final3310End.classList.add('is-revealed');
- if (!final3310Stream.childElementCount) {
-   for(let i=0;i<28;i++){
-     const col=document.createElement('span');
-     col.textContent=Array.from({length:32},()=>String.fromCharCode(0x30A0+Math.floor(Math.random()*96))).join('\n');
-     col.style.left=(i/28*100)+'%';
-     col.style.animationDelay=(-Math.random()*8)+'s';
-     final3310Stream.appendChild(col);
-   }
- }
-}
+// Shared cinematic presentation (not a new game-state authority).
+// Firebase broadcasts event names; individual browsers animate their own stable DOM.
+// Never serialize or overwrite an overlay's innerHTML, which breaks its references.
 window.CICARS_VISUALS = {
- finalPlaying:()=>final3310VisualRunning,
- showFinalSummary:showFinal3310Summary,
- receive(kind){
-   if(kind==='final') startFinal3310Cinematic(true);
-   else if(kind==='hack') {
-     // Followers show the complete 4-second recovery cinematic locally.
-     if(!cipher04Pending){
-       cipher04Pending=true;
-       hackSuccessOverlay.hidden=false;
-       hackSuccessOverlay.classList.remove('is-ending','is-verified');
-       hackSuccessProgress.style.width='10%';
-       hackSuccessPercent.textContent='10% // RECOVERING';
-       setTimeout(()=>{
-         hackSuccessProgress.style.width='100%';
-         hackSuccessPercent.textContent='100% // ACCESS SECURED';
-         hackSuccessOverlay.classList.add('is-verified');
-       },1300);
-       setTimeout(()=>{hackSuccessOverlay.hidden=true;cipher04Pending=false;},4100);
-     }
-   }
-   else if(kind==='identification'){
-     identificationOverlay.hidden=false;
-     identificationOverlay.classList.add('is-printing');
-     const title=document.getElementById('identification-title');
-     title.textContent='IDENTIFICATION COMPLETE';
-     setTimeout(()=>{identificationOverlay.hidden=true;identificationOverlay.classList.remove('is-printing');},5200);
-   }
- }
+  finalPlaying: () => cicarsFinalAnimationPlaying,
+  showFinalSummary: () => {
+    if (cicarsFinalAnimationPlaying) return;
+    final3310Complete = true;
+    final3310AwaitWord = false;
+    final3310Overlay.hidden = false;
+    final3310Modal.hidden = true;
+    final3310Console.hidden = true;
+    final3310End.hidden = false;
+    document.getElementById('final3310-banner').hidden = true;
+    final3310End.classList.add('is-revealed');
+    if (!final3310Stream.children.length) {
+      for (let i=0;i<35;i++) {
+        const col=document.createElement('span');
+        col.textContent=Array.from({length:40},()=>String.fromCharCode(0x30A0+Math.floor(Math.random()*96))).join('\n');
+        col.style.animationDelay=(-Math.random()*8)+'s';
+        col.style.left=(i/35*100)+'%';
+        final3310Stream.appendChild(col);
+      }
+    }
+  },
+  receive: (kind) => {
+    if (kind === 'final') {
+      if (!cicarsFinalAnimationPlaying && final3310Overlay.hidden) {
+        startFinal3310Cinematic().catch(error => {
+          console.error('[CICARS] Final cinematic failed', error);
+          window.CICARS_VISUALS.showFinalSummary();
+        });
+      }
+    } else if (kind === 'identification') {
+      if (identificationOverlay.hidden) {
+        identificationOverlay.hidden = false;
+        identificationTitle.textContent = '';
+        identificationStatus.textContent = 'CICARS_3310 // SIGNAL LOST';
+        identificationReadout.textContent = 'MEMORY ERROR // RECONNECTING';
+        identificationOverlay.classList.add('is-frozen');
+        setTimeout(() => {
+          identificationOverlay.classList.remove('is-frozen');
+          identificationTitle.textContent = 'IDENTIFICATION COMPLETE';
+          identificationStatus.textContent = 'CICARS_3310 // PERSONNEL RECOGNITION';
+          identificationReadout.textContent = 'PERSONNEL IDENTIFICATION // 100%';
+        }, 2900);
+        setTimeout(() => { identificationOverlay.hidden = true; }, 10000);
+      }
+    } else if (kind === 'hack') {
+      if (hackSuccessOverlay.hidden) {
+        hackSuccessOverlay.hidden = false;
+        hackSuccessStatus.textContent = 'EXECUTING RESTORE PROTOCOL...';
+        hackSuccessTitle.textContent = 'SUCCESS';
+        hackSuccessSubtitle.textContent = 'ARCHIVE INTEGRITY REESTABLISHED';
+        hackSuccessProgress.style.width='0%';
+        hackSuccessPercent.textContent='00% // HANDSHAKE';
+        setTimeout(() => {
+          hackSuccessProgress.style.width='100%';
+          hackSuccessPercent.textContent='100% // ACCESS SECURED';
+          hackSuccessStatus.textContent='RESTORE PROTOCOL // COMPLETE';
+        }, 1300);
+        setTimeout(() => {hackSuccessOverlay.hidden=true;}, 4100);
+      }
+    }
+  }
 };
-
-// Finale ADMIN / RESET is always reachable above the cinematic layer.
-document.getElementById('final3310-admin-launch').addEventListener('click', openAdminPanel);
