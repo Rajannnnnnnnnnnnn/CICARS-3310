@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+  <path d="M 44,53 Q 500,-3 956,53 Q 997,500 956,947 Q 500,1003 44,947 Q 3,500 44,53 Z" fill="none" stroke="#86dc9e" stroke-width="1.8" stroke-opacity=".83"/>
+  <path d="M 54,63 Q 500,11 946,63 Q 985,500 946,937 Q 500,989 54,937 Q 15,500 54,63 Z" fill="none" stroke="#4e9e65" stroke-width="1" stroke-opacity=".23"/>
+</svg>

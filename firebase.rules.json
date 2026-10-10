@@ -1,0 +1,45 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "sessions": {
+      "$session": {
+        ".read": "auth != null",
+        "control": {
+          "leader": {
+            ".write": "auth != null && newData.exists() && newData.child('uid').val() == auth.uid && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() > now && newData.child('expiresAt').val() <= now + 30000 && (!data.exists() || data.child('expiresAt').val() < now || (data.child('uid').val() == auth.uid && data.child('client').val() == newData.child('client').val()))",
+            ".validate": "newData.hasChildren(['uid','client','expiresAt']) && newData.child('client').isString() && newData.child('client').val().length < 150"
+          }
+        },
+        "state": {
+          ".write": "auth != null && root.child('sessions').child($session).child('control').child('leader').child('uid').val() == auth.uid && root.child('sessions').child($session).child('control').child('leader').child('expiresAt').val() > now",
+          ".validate": "newData.hasChildren(['history','flags','revision']) && newData.child('history').isString() && newData.child('history').val().length < 8000000"
+        },
+        "drafts": {
+          "$field": {
+            ".write": "auth != null && ($field == 'command' || $field == 'access')",
+            ".validate": "newData.hasChildren(['value','by','at']) && newData.child('value').isString() && newData.child('value').val().length <= 6000 && newData.child('by').val() == auth.uid && newData.child('at').isNumber()"
+          }
+        },
+        "requests": {
+          "$id": {
+            ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('uid').val() == auth.uid) || (!newData.exists() && root.child('sessions').child($session).child('control').child('leader').child('uid').val() == auth.uid))",
+            ".validate": "newData.hasChildren(['type','value','uid','client','at']) && newData.child('type').isString() && newData.child('type').val().matches(/^(command|trust|audio-open|trace-open|test02)$/) && newData.child('value').isString() && newData.child('value').val().length <= 6000 && newData.child('client').isString() && newData.child('client').val().length < 150 && newData.child('uid').val() == auth.uid"
+          }
+        },
+        "adminRequests": {
+          "$id": {
+            ".write": "auth != null && ((!data.exists() && newData.exists() && auth.uid == 'kDC4wffJuCb7Hn194iqtNqJL3FE2' && newData.child('uid').val() == auth.uid) || (!newData.exists() && root.child('sessions').child($session).child('control').child('leader').child('uid').val() == auth.uid))",
+            ".validate": "newData.hasChildren(['type','value','uid','at']) && newData.child('type').val() == 'jump' && newData.child('value').isString() && newData.child('value').val().length <= 20 && newData.child('uid').val() == auth.uid"
+          }
+        },
+        "effects": {
+          "$id": {
+            ".write": "auth != null && root.child('sessions').child($session).child('control').child('leader').child('uid').val() == auth.uid",
+            ".validate": "newData.hasChildren(['id','kind','at']) && newData.child('id').isString() && newData.child('kind').isString() && newData.child('kind').val().length <= 45 && newData.child('at').isNumber()"
+          }
+        }
+      }
+    }
+  }
+}
