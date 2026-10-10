@@ -1810,19 +1810,29 @@ window.CICARS_VISUALS = {
         });
       }
     } else if (kind === 'identification') {
-      if (identificationOverlay.hidden) {
+      // A follower may already have a visible overlay restored by Firebase;
+      // the visible state alone doesn't mean its animation timers exist.
+      if (!window.__cicarsRemoteIdentificationRunning && !trace03Unlocked) {
+        window.__cicarsRemoteIdentificationRunning = true;
         identificationOverlay.hidden = false;
         identificationTitle.textContent = '';
         identificationStatus.textContent = 'CICARS_3310 // SIGNAL LOST';
         identificationReadout.textContent = 'MEMORY ERROR // RECONNECTING';
+        identificationOverlay.classList.remove('is-printing', 'is-fading');
         identificationOverlay.classList.add('is-frozen');
         setTimeout(() => {
+          if (identificationOverlay.hidden || trace03Unlocked) return;
           identificationOverlay.classList.remove('is-frozen');
+          identificationOverlay.classList.add('is-printing');
           identificationTitle.textContent = 'IDENTIFICATION COMPLETE';
           identificationStatus.textContent = 'CICARS_3310 // PERSONNEL RECOGNITION';
           identificationReadout.textContent = 'PERSONNEL IDENTIFICATION // 100%';
         }, 2900);
-        setTimeout(() => { identificationOverlay.hidden = true; }, 10000);
+        setTimeout(() => {
+          identificationOverlay.hidden = true;
+          identificationOverlay.classList.remove('is-frozen', 'is-printing');
+          window.__cicarsRemoteIdentificationRunning = false;
+        }, 10000);
       }
     } else if (kind === 'hack') {
       if (hackSuccessOverlay.hidden) {
