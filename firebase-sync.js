@@ -103,7 +103,7 @@
   function patchOverlay(el, snap) {
     if (!el || !snap) return;
     // Do not change user's locally opened file dialogs, only shared cinematics.
-    if (el.innerHTML !== snap.html) el.innerHTML = snap.html;
+    // Preserve original animation DOM and listeners; never replace with snapshot HTML.
     el.className = snap.classes;
     el.hidden = !snap.shown;
   }
